@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tradutor</title>
+<style>
+:root{
+  --bg:#f7f7f8; --panel:#ffffff; --text:#1a1a1a; --muted:#6b6b70;
+  --border:#e2e2e6; --accent:#2563eb; --accent-text:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121214; --panel:#1c1c1f; --text:#f2f2f3; --muted:#9a9aa0;
+    --border:#2c2c30; --accent:#3b82f6; --accent-text:#ffffff;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+.wrap{max-width:720px;margin:0 auto;padding:24px 16px;}
+h1{font-size:1.3rem;margin:0 0 16px;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;}
+.row{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+select{flex:1;min-width:140px;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.95rem;}
+.swap{background:none;border:1px solid var(--border);border-radius:8px;padding:9px 12px;cursor:pointer;color:var(--text);font-size:1rem;}
+textarea{width:100%;min-height:110px;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:1rem;resize:vertical;font-family:inherit;}
+button.primary{width:100%;padding:12px;border:none;border-radius:10px;background:var(--accent);color:var(--accent-text);font-size:1rem;font-weight:600;cursor:pointer;margin-top:10px;}
+button.primary:disabled{opacity:0.6;cursor:default;}
+.output{white-space:pre-wrap;min-height:60px;font-size:1rem;line-height:1.5;}
+.muted{color:var(--muted);font-size:0.85rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tradutor</h1>
+  <div class="panel">
+    <div class="row">
+      <select id="srcLang"></select>
+      <button class="swap" id="swapBtn" title="Trocar idiomas">⇄</button>
+      <select id="tgtLang"></select>
+    </div>
+    <textarea id="inputText" placeholder="Escreve ou cola o texto aqui..."></textarea>
+    <button class="primary" id="translateBtn">Traduzir</button>
+    <p class="muted" id="status"></p>
+  </div>
+  <div class="panel">
+    <div class="muted" style="margin-bottom:6px;">Tradução</div>
+    <div class="output" id="outputText"></div>
+  </div>
+</div>
+
+<script>
+const LANGS = ["Detetar idioma","Abcázio","Acadiano","Afar","Africâner","Aimará","Akan","Albanês","Alemão","Alemão (Alemanha)","Alemão (Áustria)","Alemão (Suíça)","Alto sorábio","Amárico","Árabe","Aramaico","Armênio","Ase","Assamês","Azerbaijano","Baixo sorábio","Bambara","Basco","Bashkir","Bengali","Bengali (Índia)","Bhojpuri","Bielorrusso","Birmanês","Bislamá","Bodo","Bósnio","Bretão","Búlgaro","Canarim","Cantonês","Cantonês (Hong Kong)","Catalão","Caxemira","Cazaque","Cheroqui","Chinês","Chinês (China)","Chinês (Hong Kong)","Chinês (simplificado)","Chinês (Singapura)","Chinês (Taiwan)","Chinês (tradicional)","Choctaw","Cingalês","Concani","Copta","Coreano","Corso","Cree","Croata","Curdo","Dinamarquês","Dogri","Dzonga","Eslovaco","Esloveno","Espanhol","Espanhol (América Latina)","Espanhol (Espanha)","Espanhol (Estados Unidos)","Espanhol (México)","Esperanto","Estoniano","Ewe","Feroês","Fijiano","Filipino","Finlandês","Francês","Francês (Bélgica)","Francês (Canadá)","Francês (França)","Francês (Suíça)","Frísio ocidental","Frp","Fula","Gaélico escocês","Galego","Galês","Georgiano","Grego","Groenlandês","Guarani","Gusii","Guzerate","Hacá","Hacá (Taiwan)","Haitiano","Hariani","Hauçá","Havaiano","Hebraico","Hindi","Hindi (latim)","Hiri motu","Holandês","Holandês (Bélgica)","Holandês (Países Baixos)","Húngaro","Igbo","Iídiche","Indonésio","Inglês (Austrália)","Inglês (Canadá)","Inglês (Estados Unidos)","Inglês (Índia)","Inglês (Irlanda)","Inglês (Reino Unido)","Interlíngua","Interlingue","Inuktitut","Inupiaque","Iorubá","Irlandês","Islandês","Italiano","Japonês","Javanês","Kalenjin","Kamba","Khmer","Klingon","Ladino","Laosiano","Latim","Letão","Lingala","Lituano","Lojban","Luba-catanga","Luganda","Luo","Lushai","Luxemburguês","Luyia","Macedônio","Maithili","Malaiala","Malaio","Malaio (Singapura)","Malgaxe","Maltês","Manipuri","Maori","Marati","Massai","Meru","Min nan","Min nan (Taiwan)","Mixe","Mongol","Mongol (mongol)","Nauruano","Navajo","Ndebele do norte","Ndebele do sul","Nepalês","Norueguês","Occitânico","Oriá","Oromo","Panjabi","Papiamento","Pashto","Persa","Persa (Afeganistão)","Persa (Irã)","Pidgin nigeriano","Polonês","Português","Português (Brasil)","Português (Portugal)","Quíchua","Quicuio","Quiniaruanda","Quirguiz","Romanche","Romeno","Romeno (Moldávia)","Rundi","Russo","Russo (latim)","Samoano","Sango","Sânscrito","Santali","Sardo","Sérvio","Sérvio (cirílico)","Sérvio (latim)","Servo-croata","Sherdukpen","Siciliano","Sindi","Somali","Soto do sul","Soto setentrional","Suaíli","Suázi","Sueco","Sundanês","Tadjique","Tagalo","Tailandês","Tâmil","Tártaro","Tcheco","Télugo","Tibetano","Tigrínia","Tok pisin","Toki pona","Tonganês","Tsonga","Tswana","Turco","Turcomeno","Twi","Ucraniano","Uigur","Uolofe","Urdu","Uzbeque","Valão","Venda","Vietnamita","Volapuque","Vro","Wolaytta","Xhosa","Xona","Zulu"];
+
+const srcSel = document.getElementById('srcLang');
+const tgtSel = document.getElementById('tgtLang');
+LANGS.forEach(l=>{ const o=document.createElement('option'); o.textContent=l; srcSel.appendChild(o); });
+LANGS.slice(1).forEach(l=>{ const o=document.createElement('option'); o.textContent=l; tgtSel.appendChild(o); });
+srcSel.value = "Detetar idioma";
+tgtSel.value = "Português (Portugal)";
+
+document.getElementById('swapBtn').onclick = ()=>{
+  if(srcSel.value === "Detetar idioma") return;
+  const a = srcSel.value, b = tgtSel.value;
+  srcSel.value = b; tgtSel.value = a;
+};
+
+const statusEl = document.getElementById('status');
+const outEl = document.getElementById('outputText');
+const btn = document.getElementById('translateBtn');
+
+btn.onclick = async ()=>{
+  const text = document.getElementById('inputText').value.trim();
+  if(!text){ statusEl.textContent = "Escreve algum texto primeiro."; return; }
+  btn.disabled = true;
+  statusEl.textContent = "A traduzir...";
+  outEl.textContent = "";
+  try{
+    const resp = await fetch('/api/translate', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ text, source: srcSel.value, target: tgtSel.value })
+    });
+    const data = await resp.json();
+    if(!resp.ok){ throw new Error(data.error || 'Erro desconhecido'); }
+    outEl.textContent = data.translation;
+    statusEl.textContent = "";
+  }catch(e){
+    statusEl.textContent = "Erro ao traduzir: " + e.message;
+  }
+  btn.disabled = false;
+};
+</script>
+</body>
+</html>
